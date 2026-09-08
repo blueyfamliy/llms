@@ -1,0 +1,36 @@
+# A ~3M parameter model that trains on tinyshakespeare in a few minutes on a
+# laptop (CPU or Apple Silicon). Good for verifying the pipeline end to end.
+#
+#   python scripts/prepare_data.py --dataset tinyshakespeare --vocab-size 4096
+#   python -m llms.train --config configs/tiny.yaml
+
+model:
+  vocab_size: 4096      # overridden by the dataset's meta.json
+  block_size: 256
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  dropout: 0.1          # a small corpus overfits quickly without this
+  tie_embeddings: true
+
+data:
+  data_dir: data/tinyshakespeare
+  tokenizer_path: data/tinyshakespeare/tokenizer.json
+
+train:
+  out_dir: out/tiny
+  batch_size: 32
+  grad_accum_steps: 1
+  max_steps: 2000
+  warmup_steps: 100
+  lr: 1.0e-3            # small models tolerate a much higher LR than large ones
+  min_lr: 1.0e-4
+  weight_decay: 0.1
+  grad_clip: 1.0
+  eval_interval: 250
+  eval_iters: 40
+  log_interval: 10
+  device: auto
+  dtype: auto
+  compile: false
+  seed: 1337

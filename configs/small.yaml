@@ -1,0 +1,38 @@
+# A ~35M parameter model. Sized for a single GPU with >=8 GB of memory; on
+# CPU it will be impractically slow. Expects a corpus of at least a few
+# hundred million tokens to be worth training.
+#
+#   python scripts/prepare_data.py --input corpus.txt --out-dir data/mine --vocab-size 16384
+#   python -m llms.train --config configs/small.yaml
+
+model:
+  vocab_size: 16384     # overridden by the dataset's meta.json
+  block_size: 1024
+  n_layer: 12
+  n_head: 12
+  n_kv_head: 4          # grouped-query attention: 3 query heads share each KV head
+  n_embd: 768
+  dropout: 0.0          # with enough data, regularization is unnecessary
+  tie_embeddings: true
+
+data:
+  data_dir: data/mine
+  tokenizer_path: data/mine/tokenizer.json
+
+train:
+  out_dir: out/small
+  batch_size: 12
+  grad_accum_steps: 40  # effective batch ~= 12 * 40 * 1024 = 491k tokens
+  max_steps: 100000
+  warmup_steps: 2000
+  lr: 6.0e-4
+  min_lr: 6.0e-5
+  weight_decay: 0.1
+  grad_clip: 1.0
+  eval_interval: 1000
+  eval_iters: 100
+  log_interval: 20
+  device: auto
+  dtype: auto
+  compile: true         # ~1.5x faster on CUDA; turn off if compilation fails
+  seed: 1337
