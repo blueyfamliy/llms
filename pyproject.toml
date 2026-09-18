@@ -18,7 +18,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7.4", "ruff>=0.4"]
+# The desktop app serves its UI over local HTTP; see gui/server.py.
+gui = ["fastapi>=0.110", "uvicorn>=0.27"]
+dev = ["pytest>=7.4", "ruff>=0.4", "httpx>=0.27"]
 
 [tool.setuptools.packages.find]
 include = ["llms*"]

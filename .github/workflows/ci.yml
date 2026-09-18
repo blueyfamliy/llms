@@ -14,9 +14,9 @@ jobs:
         python-version: ["3.9", "3.11", "3.12"]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
@@ -26,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           # CPU-only torch keeps the CI image small and the install fast.
           pip install torch --index-url https://download.pytorch.org/whl/cpu
-          pip install -e ".[dev]"
+          pip install -e ".[dev,gui]"
 
       - name: Lint
         run: ruff check .

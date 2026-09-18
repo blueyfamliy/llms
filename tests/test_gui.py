@@ -215,6 +215,7 @@ def test_stop_is_safe_when_nothing_is_running(client):
 def test_find_free_port_returns_a_bindable_port():
     import socket
 
+    pytest.importorskip("fastapi")
     from gui.server import HOST, find_free_port
 
     port = find_free_port()
@@ -224,6 +225,7 @@ def test_find_free_port_returns_a_bindable_port():
 
 def test_log_buffer_is_bounded():
     """A long training run must not grow the in-memory log without bound."""
+    pytest.importorskip("fastapi")
     from gui.server import MAX_LOG_LINES, Session
 
     s = Session()
